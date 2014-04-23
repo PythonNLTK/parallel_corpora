@@ -3,9 +3,7 @@ from __future__ import division
 
 from nltk.corpus import brown
 from nltk.corpus import stopwords
-from nltk import FreqDist
 import time, nltk, math, operator, re
-from collections import defaultdict
 from nltk.stem.wordnet import WordNetLemmatizer
 
 lmtzr = WordNetLemmatizer()
