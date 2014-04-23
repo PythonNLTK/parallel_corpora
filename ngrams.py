@@ -17,8 +17,6 @@ tagged = []
 for elem in ngrams:
     tagged.append(nltk.pos_tag(elem))
 
-
-
 def findCandidates(ngram):
     ngrams = []
     ngrams.append(ngram)
@@ -26,7 +24,7 @@ def findCandidates(ngram):
     return ngrams
 
 if __name__ == '__main__':
-    pool = Pool(processes=1)
+    pool = Pool(processes=8)
     res = pool.map(findCandidates, tagged)
     
     print res
