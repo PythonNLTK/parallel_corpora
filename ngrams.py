@@ -12,11 +12,6 @@ data = brown.words(fileids=['ca01'])
 def find_ngrams(input_list, n):
     return zip(*[input_list[i:] for i in range(n)])
   
-ngrams = find_ngrams(data, 5)
-tagged = []
-for elem in ngrams:
-    tagged.append(nltk.pos_tag(elem))
-
 def findCandidates(ngram):
     ngrams = []
     ngrams.append(ngram)
@@ -24,6 +19,12 @@ def findCandidates(ngram):
     return ngrams
 
 if __name__ == '__main__':
+    
+    ngrams = find_ngrams(data, 5)
+    tagged = []
+    for elem in ngrams:
+        tagged.append(nltk.pos_tag(elem))
+    
     pool = Pool(processes=8)
     res = pool.map(findCandidates, tagged)
     
