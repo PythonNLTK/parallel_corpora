@@ -13,11 +13,9 @@ lmtzr = WordNetLemmatizer()
 t1 = time.time()
 
 fdist = FreqDist()
+
 test_set = codecs.open('/home/michi/corpora/testset', 'r', 'utf8')
-
 data = test_set.read()
-
-#data = "A computer is a general purpose device that can be programmed to carry out a set of arithmetic or logical operations automatically. Since a sequence of operations can be readily changed, the computer can solve more than one kind of problem. Conventionally, a computer consists of at least one processing element, typically a central processing unit (CPU), and some form of memory. The processing element carries out arithmetic and logic operations, and a sequencing and control unit can change the order of operations in response to stored information. Peripheral devices allow information to be retrieved from an external source, and the result of operations saved and retrieved. In World War II, mechanical analog computers were used for specialized military applications. During this time the first electronic digital computers were developed. Originally they were the size of a large room, consuming as much power as several hundred modern personal computers (PCs). Modern computers based on integrated circuits are millions to billions of times more capable than the early machines, and occupy a fraction of the space.[2] Simple computers are small enough to fit into mobile devices, and mobile computers can be powered by small batteries. Personal computers in their various forms are icons of the Information Age and are what most people think of as 'computers.' However, the embedded computers found in many devices from MP3 players to fighter aircraft and from toys to industrial robots are the most numerous."
 
 data_tokenized = nltk.word_tokenize(data)
 data_lowercased = [token.lower() for token in data_tokenized]
