@@ -4,13 +4,15 @@ from __future__ import division
 from nltk.corpus import brown
 # from nltk.corpus import stopwords
 from nltk import FreqDist
-import time, nltk
+import time, nltk, codecs
 # from collections import defaultdict
 
 t1 = time.time()
 
 #data_tok = nltk.word_tokenize(data)
-data_tok = brown.words()
+test_set = codecs.open('/home/michi/corpora/testset', 'r', 'utf8')
+data = test_set.read()
+data_tok = nltk.word_tokenize(data)
 #data_tok = brown.words(fileids=['ca01', 'ca02', 'cd01', 'cd02', 'ch01', 'ch02'])
 #data_lower = [token.lower() for token in data_tok]
     
