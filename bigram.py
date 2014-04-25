@@ -22,7 +22,7 @@ def calcChiSqr(bigrams):
     
     # w1, w2: sum11 / w1: sum12 / w2: sum21 / none: sum22
     
-    (sum11, sum12, sum21, sum22) = 0, 0, 0, 0
+    sum11, sum12, sum21, sum22 = 0, 0, 0, 0
     
     for bg in bigrams:
         for bigram in bigrams:
@@ -45,12 +45,12 @@ def filterResults(bigram_dic):
 
     for entry in sorted_bigram_chisqr:
         if not entry[0][0] in stopwords.words('english') and not entry[0][1] in stopwords.words('english') \
-            and nonPunct.match(entry[0]) and nonPunct.match(entry[1]):
+            and nonPunct.match(entry[0][0]) and nonPunct.match(entry[0][1]):
             print entry
 
 if __name__ == '__main__':
     
-    data = brown.words(fileids=['ca01', 'ca02', 'ca03', 'ca04', 'ca05', 'ca06', 'ca07', 'ca08', 'ca09', 'ca10']) 
+    data = brown.words(fileids=['ca01', 'ca02', 'ca03', 'ca04', 'ca05', 'ca06', 'ca07', 'ca08', 'ca09', 'ca10', 'ca11', 'ca12', 'ca13', 'ca14', 'ca15', 'ca16', 'ca17', 'ca18', 'ca19', 'ca20']) 
     nonPunct = re.compile('[A-Za-z0-9]')
         
     t1 = time.time()
