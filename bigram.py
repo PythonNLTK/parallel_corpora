@@ -60,7 +60,7 @@ if __name__ == '__main__':
     pool = Pool(processes=2)
     result = pool.map(calcChiSqr, bigrams)
     #bigram_dic = calcChiSqr(bigrams)
-    filteredResults = filterResults(result[0])
+    filterResults(result[0])
         
     print time.time() - t1
     
