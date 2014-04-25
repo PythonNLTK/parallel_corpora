@@ -5,6 +5,7 @@ from nltk.corpus import brown
 from nltk.corpus import stopwords
 import time, nltk, math, operator, re
 from nltk.stem.wordnet import WordNetLemmatizer
+from multiprocessing import Pool
 
 lmtzr = WordNetLemmatizer()
 
@@ -16,7 +17,7 @@ def prepareData(data):
 
     return bigrams
 
-def calcChiSqr(bigrams):
+def calcChiSqr(bg):
     
     bigram_dic = {}
     
@@ -24,18 +25,18 @@ def calcChiSqr(bigrams):
     
     sum11, sum12, sum21, sum22 = 0, 0, 0, 0
     
-    for bg in bigrams:
-        for bigram in bigrams:
-            if bg[0] == bigram[0] and bg[1] == bigram[1]:
-                sum11 += 1
-            elif bg[0] != bigram[0] and bg[1] == bigram[1]:
-                sum12 += 1
-            elif bg[0] == bigram[0] and bg[1] != bigram[1]:
-                sum21 += 1
-            elif bg[0] != bigram[0] and bg[1] != bigram[1]:
-                sum22 += 1
+    #for bg in bigrams:
+    for bigram in bigrams:
+        if bg[0] == bigram[0] and bg[1] == bigram[1]:
+            sum11 += 1
+        elif bg[0] != bigram[0] and bg[1] == bigram[1]:
+            sum12 += 1
+        elif bg[0] == bigram[0] and bg[1] != bigram[1]:
+            sum21 += 1
+        elif bg[0] != bigram[0] and bg[1] != bigram[1]:
+            sum22 += 1
                 
-        bigram_dic[bg] = ( len(data) * math.pow(sum11*sum22 - sum12*sum21, 2) ) / ( (sum11+sum12) * (sum11+sum21) * (sum12+sum22) * (sum21+sum22) )
+    bigram_dic[bg] = ( len(data) * math.pow(sum11*sum22 - sum12*sum21, 2) ) / ( (sum11+sum12) * (sum11+sum21) * (sum12+sum22) * (sum21+sum22) )
         
     return bigram_dic
         
@@ -56,8 +57,10 @@ if __name__ == '__main__':
     t1 = time.time()
     
     bigrams = prepareData(data)
-    bigram_dic = calcChiSqr(bigrams)
-    filteredResults = filterResults(bigram_dic)
+    pool = Pool(processes=2)
+    result = pool.map(calcChiSqr, bigrams)
+    #bigram_dic = calcChiSqr(bigrams)
+    filteredResults = filterResults(result[0])
         
     print time.time() - t1
     
