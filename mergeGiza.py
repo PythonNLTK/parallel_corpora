@@ -19,10 +19,11 @@ def readAlignment(inputFile):
     handle = codecs.open(inputFile, 'r', 'utf8')
     data = {}
     
+    # line[0] = srcID, line[1] = trgID, line[2] = alignmentScore
     for line in handle.readlines():
         if not line.split(' ')[0] in data and 'e' in line.split(' ')[2]:
             data[line.split(' ')[0]] = (line.split(' ')[1], 0)
-        if not line.split(' ')[0] in data and not 'e' in line.split(' ')[2]:
+        elif not line.split(' ')[0] in data and not 'e' in line.split(' ')[2]:
             data[line.split(' ')[0]] = (line.split(' ')[1], line.split(' ')[2])
         elif line.split(' ')[2] > data[line.split(' ')[0]][1] and not 'e' in line.split(' ')[2]:
             data[line.split(' ')[0]] = (line.split(' ')[1], line.split(' ')[2])
@@ -43,5 +44,4 @@ if __name__ == '__main__':
         
     for k, v in sorted(aligned.items()):
         print k, v
-    
     
