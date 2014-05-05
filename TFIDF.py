@@ -59,11 +59,16 @@ def filterResults(tfidf):
             
     return tfidf
 
-def output(tfidf_filtered):
-    sorted_tfidf = sorted(tfidf.iteritems(), key=operator.itemgetter(1))
-
-    for entry in sorted_tfidf:
+def output(sorted):
+    for entry in sorted:
         print entry
+        
+def writeToFile(sorted_output):
+    with codecs.open('/home/michi/corpora/tfidf.txt', 'a', encoding='utf-8') as outputFile:
+        for entry in sorted_output:
+            outputFile.write(entry[0] + ',' + str(entry[1]) + '\n')
+            #outputFile.write('\n')    
+
 
 if __name__ == '__main__':
     
@@ -76,6 +81,7 @@ if __name__ == '__main__':
     tfidf = calcTFIDF(data_lemmas)
     
     tfidf_filtered = filterResults(tfidf)
-    output(tfidf_filtered)
-        
+    sorted_tfidf = sorted(tfidf_filtered.iteritems(), key=operator.itemgetter(1))
+    writeToFile(sorted_tfidf)
+    
     print time.time() - t1
