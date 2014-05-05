@@ -35,9 +35,20 @@ def readAlignment(inputFile):
 def alignTokens(src, trg, alignedIDs):
     alignedToks = []
     for entry in src:
-        alignedToks.append((entry[1], trg[int(alignedIDs[entry[0]][0])][1]))         
+        #print entry[1], trg[int(alignedIDs[entry[0]][0])][1]
+        try:
+            alignedToks.append((entry[1], trg[int(alignedIDs[entry[0]][0])][1]))
+        except Exception:
+            pass
 
     return alignedToks
+
+def writeToFile(finalMerge):
+    
+    outFile = '/home/michi/working/merged.txt'
+    with codecs.open(outFile, 'w', encoding='utf-8') as myFile:
+        for entry in finalMerge:
+            myFile.write(entry[0] + ',' + entry[1] + '\n')#.encode('UTF-8'))
 
 if __name__ == '__main__':
     
@@ -54,6 +65,7 @@ if __name__ == '__main__':
 
     finalMerge = alignTokens(sourceLang, targetLang, aligned)
     
-    for entry in finalMerge:
-        print entry[0], entry[1].encode("UTF-8")
-    
+    writeToFile(finalMerge)
+#     for entry in finalMerge:
+#         print entry[0], entry[1].encode("UTF-8")
+#     
