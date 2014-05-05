@@ -6,7 +6,7 @@ import codecs
 def readFile(inputFile):
     
     # data[0] = id, data[1] = string, data[2] = occurrence
-    handle = codecs.open(inputFile, 'r', 'utf8')
+    handle = codecs.open(inputFile, 'r', encoding='utf-8')
     data = []
     for line in handle.readlines():
         data.append(line.split(' '))
@@ -16,7 +16,7 @@ def readFile(inputFile):
     return data
 
 def readAlignment(inputFile):
-    handle = codecs.open(inputFile, 'r', 'utf8')
+    handle = codecs.open(inputFile, 'r', encoding='utf-8')
     data = {}
     
     # line[0] = srcID, line[1] = trgID, line[2] = alignmentScore
@@ -32,6 +32,13 @@ def readAlignment(inputFile):
             
     return data
 
+def alignTokens(src, trg, alignedIDs):
+    alignedToks = []
+    for entry in src:
+        alignedToks.append((entry[1], trg[int(alignedIDs[entry[0]][0])][1]))         
+
+    return alignedToks
+
 if __name__ == '__main__':
     
     sourceFile = '/home/michi/working/source.txt'
@@ -41,7 +48,12 @@ if __name__ == '__main__':
     sourceLang = readFile(sourceFile)
     targetLang = readFile(targetFile)
     aligned = readAlignment(alignmentFile)
-        
-    for k, v in sorted(aligned.items()):
-        print k, v
+            
+#     for k, v in sorted(aligned.items()):
+#         print k, v
+
+    finalMerge = alignTokens(sourceLang, targetLang, aligned)
+    
+    for entry in finalMerge:
+        print entry[0], entry[1].encode("UTF-8")
     
