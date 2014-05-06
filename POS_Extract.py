@@ -10,7 +10,7 @@ import time, nltk, codecs
 t1 = time.time()
 
 #data_tok = nltk.word_tokenize(data)
-test_set = codecs.open('/home/michi/corpora/testset', 'r', 'utf8')
+test_set = codecs.open('/home/michi/corpora/testset_big', 'r', 'utf8')
 data = test_set.read()
 data_tok = nltk.word_tokenize(data)
 #data_tok = brown.words(fileids=['ca01', 'ca02', 'cd01', 'cd02', 'ch01', 'ch02'])
