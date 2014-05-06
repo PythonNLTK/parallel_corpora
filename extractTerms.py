@@ -113,8 +113,8 @@ if __name__ == '__main__':
 #     print multiWordTerms[:10], len(multiWordTerms)
 #     print filteredMultiTerms[:10], len(filteredMultiTerms)
 #     print alignedData[:10], len(alignedData)
-#     print alignedSingleTerms[:10], len(alignedSingleTerms)
-#     print alignedMultiTerms[:10], len(alignedMultiTerms)
+    print alignedSingleTerms[:10], len(alignedSingleTerms)
+    print alignedMultiTerms[:10], len(alignedMultiTerms)
     
     writeToFile(alignedSingleTerms, alignedMultiTerms)
     
