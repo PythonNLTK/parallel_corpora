@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*- 
 from __future__ import division
-import codecs
+import codecs, time
 
 def readSingleWords():
     
@@ -20,7 +20,7 @@ def readMultiWords():
     multiWordList = []
     with codecs.open(source, 'r', encoding='utf-8') as myFile:
         for line in myFile:
-            multiWordList.append(line.split(',')[0].split(' '))
+            multiWordList.append([line.split(',')[0].split(' '), line.split(',')[1].rstrip('\n')])
             
     # [0] = term, [1] = count
     return multiWordList
@@ -35,13 +35,23 @@ def readTokenAlignment():
 
     return alignedTokens
 
-def filterSingleTerms():
-    #to be done
-    pass
+def filterSingleTerms(singleWordTerms):
+    # reverse list so top results are first, use only first 1000 terms
+
+    return singleWordTerms[::-1][:1000]
     
-def filterMultiTerms():
-    #to be done
-    pass
+def filterMultiTerms(multiWordTerms):
+    # use only terms with occurrence higher than 5 and return term without occurrence
+    
+    temp = []
+    for entry in multiWordTerms:
+        try:
+            if int(entry[1]) >= 5:
+                temp.append(entry[0])
+        except Exception:
+            pass
+
+    return temp
 
 def alignSingleTerms(singleWordTerms, alignedData):
     
@@ -66,29 +76,48 @@ def alignMultiTerms(multiWordTerms, alignedData):
             elif l == 3:
                 if entry[0] == alignedData[i][0] and entry[1] == alignedData[i+1][0] and entry[2] == alignedData[i+2][0]:
                     alignedMultiTerms.append((alignedData[i][0], alignedData[i+1][0], alignedData[i+2][0], alignedData[i][1], alignedData[i+1][1], alignedData[i+2][1]))
-            
+              
             elif l == 4:
                 if entry[0] == alignedData[i][0] and entry[1] == alignedData[i+1][0] and entry[2] == alignedData[i+2][0] and entry[3] == alignedData[i+3][0]:
                     alignedMultiTerms.append((alignedData[i][0], alignedData[i+1][0], alignedData[i+2][0], alignedData[i+3][0], alignedData[i][1], alignedData[i+1][1], alignedData[i+2][1], alignedData[i+3][1]))  
-        
+         
     return alignedMultiTerms
+
+def writeToFile(alignedSingle, alignedMulti):
+    
+    outFile = '/home/michi/corpora/final_results.txt'
+    
+    with codecs.open(outFile, 'w', encoding='utf-8') as myFile:
+        for single in alignedSingle:
+            myFile.write(' '.join(single))
+            myFile.write('\n')
+            
+        for multi in alignedMulti:
+            myFile.write(' '.join(multi))
+            myFile.write('\n')
 
 if __name__ == '__main__':
     
+    t1 = time.time()
+    
     singleWordTerms = readSingleWords()
+    filteredSingleTerms = filterSingleTerms(singleWordTerms)
     multiWordTerms = readMultiWords()
+    filteredMultiTerms = filterMultiTerms(multiWordTerms)
+    
     alignedData = readTokenAlignment()
-    #alignedSingleTerms = alignSingleTerms(singleWordTerms, alignedData)
-    alignedMultiTerms = alignMultiTerms(multiWordTerms, alignedData)
+    alignedSingleTerms = alignSingleTerms(filteredSingleTerms, alignedData)
+    alignedMultiTerms = alignMultiTerms(filteredMultiTerms, alignedData)
     
-#     for term in singleWordTerms:
-#         if term in alignedData:
-#             print term
+#     print filteredSingleTerms[:10], len(filteredSingleTerms)
+#     print multiWordTerms[:10], len(multiWordTerms)
+#     print filteredMultiTerms[:10], len(filteredMultiTerms)
+#     print alignedData[:10], len(alignedData)
+#     print alignedSingleTerms[:10], len(alignedSingleTerms)
+#     print alignedMultiTerms[:10], len(alignedMultiTerms)
     
-    print singleWordTerms[0]
-    print multiWordTerms[:10]
-    print alignedData[0]
-    #print alignedSingleTerms[:20]
-    print alignedMultiTerms[:10]
+    writeToFile(alignedSingleTerms, alignedMultiTerms)
+    
+    print time.time() - t1
     
     
