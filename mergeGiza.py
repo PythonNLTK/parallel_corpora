@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*- 
 from __future__ import division
 import codecs
-#from collections import defaultdict
+from collections import defaultdict
+from operator import itemgetter
+
                  
 def readFile(inputFile):
     
@@ -9,7 +11,7 @@ def readFile(inputFile):
     handle = codecs.open(inputFile, 'r', encoding='utf-8')
     data = []
     for line in handle.readlines():
-        data.append(line.split(' '))
+        data.append([int(line.split(' ')[0]), line.split(' ')[1]])
         
     handle.close()
     
@@ -17,27 +19,37 @@ def readFile(inputFile):
 
 def readAlignment(inputFile):
     handle = codecs.open(inputFile, 'r', encoding='utf-8')
-    data = {}
+    data = defaultdict(list)
     
     # line[0] = srcID, line[1] = trgID, line[2] = alignmentScore
+#     for line in handle.readlines():
+#         if not line.split(' ')[0] in data and 'e' in line.split(' ')[2]:
+#             data[line.split(' ')[0]] = (line.split(' ')[1], 0)
+#         elif not line.split(' ')[0] in data and not 'e' in line.split(' ')[2]:
+#             data[line.split(' ')[0]] = (line.split(' ')[1], line.split(' ')[2])
+#         elif line.split(' ')[2] > data[line.split(' ')[0]][1] and not 'e' in line.split(' ')[2]:
+#             data[line.split(' ')[0]] = (line.split(' ')[1], line.split(' ')[2])
+
     for line in handle.readlines():
-        if not line.split(' ')[0] in data and 'e' in line.split(' ')[2]:
-            data[line.split(' ')[0]] = (line.split(' ')[1], 0)
-        elif not line.split(' ')[0] in data and not 'e' in line.split(' ')[2]:
-            data[line.split(' ')[0]] = (line.split(' ')[1], line.split(' ')[2])
-        elif line.split(' ')[2] > data[line.split(' ')[0]][1] and not 'e' in line.split(' ')[2]:
-            data[line.split(' ')[0]] = (line.split(' ')[1], line.split(' ')[2])
+        if not line.split(' ')[0] in data:
+            data[line.split(' ')[0]].append((line.split(' ')[1], float(line.split(' ')[2].rstrip('\n'))))
+        else:
+            data[line.split(' ')[0]].append((line.split(' ')[1], float(line.split(' ')[2].rstrip('\n'))))
             
+    temp = {}
+    for k, v in data.items():
+        temp[int(k)] = int(max(v,key=itemgetter(1))[0])
+                    
     handle.close()
             
-    return data
+    return temp
 
 def alignTokens(src, trg, alignedIDs):
     alignedToks = []
     for entry in src:
-        #print entry[1], trg[int(alignedIDs[entry[0]][0])][1]
+        print entry[1], trg.index(alignedIDs[entry[0]])#, trg[alignedIDs[entry[0]][0]][1]
         try:
-            alignedToks.append((entry[1], trg[int(alignedIDs[entry[0]][0])][1]))
+            alignedToks.append((entry[1], trg[alignedIDs[entry[0]][0]][1]))
         except Exception:
             pass
 
@@ -45,27 +57,27 @@ def alignTokens(src, trg, alignedIDs):
 
 def writeToFile(finalMerge):
     
-    outFile = '/home/michi/working/merged.txt'
+    outFile = '/home/michi/corpora/merged.txt'
     with codecs.open(outFile, 'w', encoding='utf-8') as myFile:
         for entry in finalMerge:
             myFile.write(entry[0] + ',' + entry[1] + '\n')#.encode('UTF-8'))
 
 if __name__ == '__main__':
     
-    sourceFile = '/home/michi/working/source.txt'
-    targetFile = '/home/michi/working/target.txt'
-    alignmentFile = '/home/michi/working/aligned.txt'
+    sourceFile = '/home/michi/corpora/source.txt'
+    targetFile = '/home/michi/corpora/target.txt'
+    alignmentFile = '/home/michi/corpora/aligned.txt'
     
     sourceLang = readFile(sourceFile)
     targetLang = readFile(targetFile)
     aligned = readAlignment(alignmentFile)
-            
-#     for k, v in sorted(aligned.items()):
-#         print k, v
-
-    finalMerge = alignTokens(sourceLang, targetLang, aligned)
     
-    writeToFile(finalMerge)
+    print aligned.items()[:10]
+    print targetLang[:10]
+    print targetLang.index(788)
+    finalMerge = alignTokens(sourceLang, targetLang, aligned)   
+    
+    #writeToFile(finalMerge)
 #     for entry in finalMerge:
 #         print entry[0], entry[1].encode("UTF-8")
 #     
