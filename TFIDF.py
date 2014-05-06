@@ -12,7 +12,7 @@ lmtzr = WordNetLemmatizer()
 
 def prepareData():
         
-    test_set = codecs.open('/home/michi/corpora/testset', 'r', 'utf8')
+    test_set = codecs.open('/home/michi/corpora/testset_big', 'r', 'utf8')
     data = test_set.read()
     
     data_tokenized = nltk.word_tokenize(data)
@@ -52,19 +52,19 @@ def calcTFIDF(data_lemmas):
     return tfidf
         
 def filterResults(tfidf):
-    nonPunct = re.compile('[A-Za-z]')
+    #nonPunct = re.compile('[A-Za-z]')
     for k in tfidf.keys():
-        if k in stopwords.words('english') or not nonPunct.match(k):
+        if k in stopwords.words('english') or not k.isalpha():
             del tfidf[k]
             
     return tfidf
 
-def output(sorted):
-    for entry in sorted:
+def output(sorted_tfidf):
+    for entry in sorted_tfidf:
         print entry
         
 def writeToFile(sorted_output):
-    with codecs.open('/home/michi/corpora/tfidf.txt', 'a', encoding='utf-8') as outputFile:
+    with codecs.open('/home/michi/corpora/tfidf_big.txt', 'a', encoding='utf-8') as outputFile:
         for entry in sorted_output:
             outputFile.write(entry[0] + ',' + str(entry[1]) + '\n')
             #outputFile.write('\n')    
