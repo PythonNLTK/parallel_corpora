@@ -9,9 +9,12 @@ def readFile(inputFile):
     
     # data[0] = id, data[1] = string, data[2] = occurrence
     handle = codecs.open(inputFile, 'r', encoding='utf-8')
-    data = []
+    data = {}
+#     for line in handle.readlines():
+#         data.append([int(line.split(' ')[0]), line.split(' ')[1]])
+        
     for line in handle.readlines():
-        data.append([int(line.split(' ')[0]), line.split(' ')[1]])
+        data[int(line.split(' ')[0])] = line.split(' ')[1]
         
     handle.close()
     
@@ -46,12 +49,15 @@ def readAlignment(inputFile):
 
 def alignTokens(src, trg, alignedIDs):
     alignedToks = []
-    for entry in src:
-        print entry[1], trg.index(alignedIDs[entry[0]])#, trg[alignedIDs[entry[0]][0]][1]
-        try:
-            alignedToks.append((entry[1], trg[alignedIDs[entry[0]][0]][1]))
-        except Exception:
-            pass
+#     for entry in src:
+#         print entry[1], trg.index(alignedIDs[entry[0]])#, trg[alignedIDs[entry[0]][0]][1]
+#         try:
+#             alignedToks.append((entry[1], trg[alignedIDs[entry[0]][0]][1]))
+#         except Exception:
+#             pass
+
+    for entry in src.items():
+        alignedToks.append((entry[1], trg[alignedIDs[entry[0]]]))
 
     return alignedToks
 
@@ -72,12 +78,8 @@ if __name__ == '__main__':
     targetLang = readFile(targetFile)
     aligned = readAlignment(alignmentFile)
     
-    print aligned.items()[:10]
-    print targetLang[:10]
-    print targetLang.index(788)
     finalMerge = alignTokens(sourceLang, targetLang, aligned)   
-    
-    #writeToFile(finalMerge)
+    writeToFile(finalMerge)
 #     for entry in finalMerge:
 #         print entry[0], entry[1].encode("UTF-8")
-#     
+     
