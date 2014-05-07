@@ -4,7 +4,7 @@ from __future__ import division
 from nltk.corpus import brown
 from nltk.corpus import stopwords
 from nltk import FreqDist
-import time, nltk, math, operator, codecs, re
+import time, nltk, math, operator, codecs
 from collections import defaultdict
 from nltk.stem.wordnet import WordNetLemmatizer
 
@@ -12,7 +12,7 @@ lmtzr = WordNetLemmatizer()
 
 def prepareData():
         
-    test_set = codecs.open('/home/michi/corpora/testset_big', 'r', 'utf8')
+    test_set = codecs.open('/home/michi/corpora/testset', 'r', 'utf8')
     data = test_set.read()
     
     data_tokenized = nltk.word_tokenize(data)
@@ -60,7 +60,7 @@ def filterResults(tfidf):
     return tfidf
         
 def writeToFile(sorted_output):
-    with codecs.open('/home/michi/corpora/tfidf.txt', 'w', encoding='utf-8') as outputFile:
+    with codecs.open('/home/michi/corpora/tfidf_results.txt', 'w', encoding='utf-8') as outputFile:
         for entry in sorted_output:
             outputFile.write(entry[0] + ',' + str(entry[1]) + '\n')
 
