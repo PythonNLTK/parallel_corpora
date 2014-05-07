@@ -8,8 +8,6 @@ import time, nltk, codecs
 # from collections import defaultdict
 
 t1 = time.time()
-    
-outFile = '/home/michi/corpora/pos_results.txt'
 
 def prepareData():
     
@@ -85,6 +83,8 @@ def calcFdist(termsList):
     return FreqDist(termsList)
 
 def writeToFile(finalTerms):
+    
+    outFile = '/home/michi/corpora/pos_results.txt'
     
     with codecs.open(outFile, 'w', encoding='utf-8') as resFile:
         for entry in finalTerms.items():
