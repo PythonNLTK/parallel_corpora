@@ -58,16 +58,11 @@ def filterResults(tfidf):
             del tfidf[k]
             
     return tfidf
-
-def output(sorted_tfidf):
-    for entry in sorted_tfidf:
-        print entry
         
 def writeToFile(sorted_output):
-    with codecs.open('/home/michi/corpora/tfidf_big.txt', 'a', encoding='utf-8') as outputFile:
+    with codecs.open('/home/michi/corpora/tfidf.txt', 'w', encoding='utf-8') as outputFile:
         for entry in sorted_output:
             outputFile.write(entry[0] + ',' + str(entry[1]) + '\n')
-            #outputFile.write('\n')    
 
 
 if __name__ == '__main__':
