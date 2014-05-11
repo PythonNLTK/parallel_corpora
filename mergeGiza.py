@@ -10,8 +10,6 @@ def readFile(inputFile):
     # data[0] = id, data[1] = string, data[2] = occurrence
     handle = codecs.open(inputFile, 'r', encoding='utf-8')
     data = {}
-#     for line in handle.readlines():
-#         data.append([int(line.split(' ')[0]), line.split(' ')[1]])
         
     for line in handle.readlines():
         data[int(line.split(' ')[0])] = line.split(' ')[1]
@@ -23,15 +21,6 @@ def readFile(inputFile):
 def readAlignment(inputFile):
     handle = codecs.open(inputFile, 'r', encoding='utf-8')
     data = defaultdict(list)
-    
-    # line[0] = srcID, line[1] = trgID, line[2] = alignmentScore
-#     for line in handle.readlines():
-#         if not line.split(' ')[0] in data and 'e' in line.split(' ')[2]:
-#             data[line.split(' ')[0]] = (line.split(' ')[1], 0)
-#         elif not line.split(' ')[0] in data and not 'e' in line.split(' ')[2]:
-#             data[line.split(' ')[0]] = (line.split(' ')[1], line.split(' ')[2])
-#         elif line.split(' ')[2] > data[line.split(' ')[0]][1] and not 'e' in line.split(' ')[2]:
-#             data[line.split(' ')[0]] = (line.split(' ')[1], line.split(' ')[2])
 
     for line in handle.readlines():
         if not line.split(' ')[0] in data:
@@ -49,15 +38,10 @@ def readAlignment(inputFile):
 
 def alignTokens(src, trg, alignedIDs):
     alignedToks = []
-#     for entry in src:
-#         print entry[1], trg.index(alignedIDs[entry[0]])#, trg[alignedIDs[entry[0]][0]][1]
-#         try:
-#             alignedToks.append((entry[1], trg[alignedIDs[entry[0]][0]][1]))
-#         except Exception:
-#             pass
 
-    for entry in src.items():
-        alignedToks.append((entry[1], trg[alignedIDs[entry[0]]]))
+    for entry in alignedIDs.items():
+        if entry[0] in src and entry[1] in trg:
+            alignedToks.append((src[entry[0]], trg[entry[1]]))
 
     return alignedToks
 
@@ -66,7 +50,8 @@ def writeToFile(finalMerge):
     outFile = '/home/michi/corpora/merged.txt'
     with codecs.open(outFile, 'w', encoding='utf-8') as myFile:
         for entry in finalMerge:
-            myFile.write(entry[0] + ',' + entry[1] + '\n')#.encode('UTF-8'))
+            if entry[0].isalpha():
+                myFile.write(entry[0].lower() + ',' + entry[1] + '\n')
 
 if __name__ == '__main__':
     
@@ -77,9 +62,7 @@ if __name__ == '__main__':
     sourceLang = readFile(sourceFile)
     targetLang = readFile(targetFile)
     aligned = readAlignment(alignmentFile)
-    
+       
     finalMerge = alignTokens(sourceLang, targetLang, aligned)   
     writeToFile(finalMerge)
-#     for entry in finalMerge:
-#         print entry[0], entry[1].encode("UTF-8")
      
