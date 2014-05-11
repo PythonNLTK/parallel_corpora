@@ -1,13 +1,8 @@
 # -*- coding: utf-8 -*- 
 from __future__ import division
 
-#from nltk.corpus import brown
-# from nltk.corpus import stopwords
 from nltk import FreqDist
 import time, nltk, codecs
-# from collections import defaultdict
-
-t1 = time.time()
 
 def prepareData():
     
@@ -15,6 +10,8 @@ def prepareData():
     data = test_set.read()
     data_tok = nltk.word_tokenize(data)
     pos_tagged = nltk.pos_tag(data_tok)
+    
+    test_set.close()
     
     return pos_tagged
 
@@ -92,17 +89,18 @@ def writeToFile(finalTerms):
 
 if __name__ == '__main__':
     
-    tagged = prepareData()
+    t1 = time.time()
+    
+    tagged = prepareData()  
     scores = calc(tagged)
     fdist = calcFdist(scores)
     writeToFile(fdist)
 
-#for i in range(0, 100):
-    #print fdist.items()[i]
+    print time.time() - t1
 
 #print rule1, rule2, rule3, rule4, rule5, rule6, rule7, rule8, rule9, rule10, rule11, rule12, rule13
 
-print time.time() - t1
+
     
     
     
