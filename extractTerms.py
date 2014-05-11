@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*- 
 from __future__ import division
-import codecs, time
+import codecs
 
 def readSingleWords():
     
@@ -9,7 +9,6 @@ def readSingleWords():
     with codecs.open(source, 'r', encoding='utf-8') as myFile:
         for line in myFile:
             singleWordList.append(line.split(','))
-            #singleWordList[line.split(',')[0]] = line.split(',')[1]
         
     # [0] = string, [1] = score
     return singleWordList
@@ -97,9 +96,7 @@ def writeToFile(alignedSingle, alignedMulti):
             myFile.write('\n')
 
 if __name__ == '__main__':
-    
-    t1 = time.time()
-    
+       
     singleWordTerms = readSingleWords()
     filteredSingleTerms = filterSingleTerms(singleWordTerms)
     multiWordTerms = readMultiWords()
@@ -108,16 +105,10 @@ if __name__ == '__main__':
     alignedData = readTokenAlignment()
     alignedSingleTerms = alignSingleTerms(filteredSingleTerms, alignedData)
     alignedMultiTerms = alignMultiTerms(filteredMultiTerms, alignedData)
-    
-#     print filteredSingleTerms[:10], len(filteredSingleTerms)
-#     print multiWordTerms[:10], len(multiWordTerms)
-#     print filteredMultiTerms[:10], len(filteredMultiTerms)
-#     print alignedData[:10], len(alignedData)
+
     print alignedSingleTerms[:10], len(alignedSingleTerms)
     print alignedMultiTerms[:10], len(alignedMultiTerms)
     
     writeToFile(alignedSingleTerms, alignedMultiTerms)
-    
-    print time.time() - t1
     
     
