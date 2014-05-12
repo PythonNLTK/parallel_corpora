@@ -13,7 +13,7 @@ def readStopWords():
     
     sourceFile = '/home/michi/corpora/stopwords.txt'
     with codecs.open(sourceFile, 'r', encoding='utf-8') as myFile:
-        stopwords = myFile.read().split(',')
+        stopwords = myFile.read().split()
         
     return stopwords
 
@@ -82,7 +82,8 @@ if __name__ == '__main__':
     
     t1 = time.time()
     
-    stopwords = readStopWords()    
+    stopwords = readStopWords()
+    print stopwords   
     data_lemmas = prepareData()
     fdist = calcFreq(data_lemmas)
     doc_dic = calcDF()
