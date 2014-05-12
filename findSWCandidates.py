@@ -83,7 +83,6 @@ if __name__ == '__main__':
     t1 = time.time()
     
     stopwords = readStopWords()
-    print stopwords   
     data_lemmas = prepareData()
     fdist = calcFreq(data_lemmas)
     doc_dic = calcDF()
