@@ -2,18 +2,17 @@
 from __future__ import division
 
 from nltk import FreqDist
-import time, nltk, codecs
+import time, codecs
 
-def prepareData():
+def readTaggedData():
     
-    test_set = codecs.open('/home/michi/corpora/testset', 'r', 'utf8')
-    data = test_set.read()
-    data_tok = nltk.word_tokenize(data)
-    pos_tagged = nltk.pos_tag(data_tok)
-    
-    test_set.close()
-    
-    return pos_tagged
+    inputFile = '/home/michi/corpora/testset_tagged'
+    taggedData = []
+    with codecs.open(inputFile, 'r', encoding='utf-8') as myFile:
+        for line in myFile:
+            taggedData.append((line.split(',')[0], line.split(',')[1].split('\n')[0]))
+            
+    return taggedData
 
 def calc(tagged_data):
     
@@ -91,7 +90,7 @@ if __name__ == '__main__':
     
     t1 = time.time()
     
-    tagged = prepareData()  
+    tagged = readTaggedData()
     scores = calc(tagged)
     fdist = calcFdist(scores)
     writeToFile(fdist)
