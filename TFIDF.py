@@ -2,13 +2,21 @@
 from __future__ import division
 
 from nltk.corpus import brown
-from nltk.corpus import stopwords
 from nltk import FreqDist
 import time, math, codecs, operator
 from collections import defaultdict
 from nltk.stem.wordnet import WordNetLemmatizer
 
 lmtzr = WordNetLemmatizer()
+
+def readStopWords():
+    
+    sourceFile = '/home/michi/corpora/stopwords.txt'
+    with codecs.open(sourceFile, 'r', encoding='utf-8') as myFile:
+        stopwords = myFile.read().split(',')
+        
+    return stopwords
+
 
 def readTaggedData():
     
@@ -60,7 +68,7 @@ def calcTFIDF(data_lemmas):
         
 def filterResults(tfidf):
     for k in tfidf.keys():
-        if not (not k[0] in stopwords.words('english') and k[0].isalpha() and len(k[0]) > 1 and (k[1] == 'NN' or k[1] == 'NNS')):
+        if not (not k[0] in stopwords and k[0].isalpha() and len(k[0]) > 1 and (k[1] == 'NN' or k[1] == 'NNS')):
             del tfidf[k]
     
     return tfidf
@@ -74,6 +82,7 @@ if __name__ == '__main__':
     
     t1 = time.time()
     
+    stopwords = readStopWords()    
     data_lemmas = prepareData()
     fdist = calcFreq(data_lemmas)
     doc_dic = calcDF()
