@@ -4,27 +4,30 @@ from __future__ import division
 from nltk.corpus import brown
 from nltk.corpus import stopwords
 from nltk import FreqDist
-import time, nltk, math, operator, codecs
+import time, math, codecs, operator
 from collections import defaultdict
 from nltk.stem.wordnet import WordNetLemmatizer
 
 lmtzr = WordNetLemmatizer()
 
-def prepareData():
-        
-    test_set = codecs.open('/home/michi/corpora/testset', 'r', 'utf8')
-    data = test_set.read()
+def readTaggedData():
     
-    data_tokenized = nltk.word_tokenize(data)
-    data_lowercased = [token.lower() for token in data_tokenized]
-    data_lemmas = [lmtzr.lemmatize(token) for token in data_lowercased]
+    inputFile = '/home/michi/corpora/testset_tagged'
+    taggedData = []
+    with codecs.open(inputFile, 'r', encoding='utf-8') as myFile:
+        for line in myFile:
+            taggedData.append((line.split(',')[0], line.split(',')[1].split('\n')[0]))
+            
+    return taggedData
 
-    #data_tagged = nltk.pos_tag(data_tokenized)
-    # tagged_dict = {}
-    # for entry in data_tagged:
-    #     tagged_dict[lmtzr.lemmatize(entry[0])] = entry[1]
+def prepareData():
 
-    return data_lemmas
+    data_tagged = readTaggedData()
+    data_lowercased = []
+    for token in data_tagged:
+        data_lowercased.append((token[0].lower(), token[1]))
+
+    return data_lowercased
 
 def calcFreq(data_lemmas):
     fdist = FreqDist()
@@ -38,7 +41,7 @@ def calcDF():
     doc_dic = defaultdict(set)
     for fileid in brown.fileids():
         for token in brown.words(fileids=[fileid]):
-            doc_dic[lmtzr.lemmatize(token)].add(fileid)
+            doc_dic[token].add(fileid)
             
     return doc_dic
 
@@ -47,23 +50,25 @@ def calcTFIDF(data_lemmas):
     tfidf = {}
     tokCount = len(fdist)
     for token in set(data_lemmas):
-        tfidf[token] = (fdist[token]/tokCount) * (math.log(500 / (1 + len(doc_dic[token]))))
+        if lmtzr.lemmatize(token[0]) in tfidf:
+            tfidf[(lmtzr.lemmatize(token[0]), token[1])] += (fdist[token]/tokCount) * (math.log(500 / (1 + len(doc_dic[token[0]]))))
+        else:
+            tfidf[(lmtzr.lemmatize(token[0]), token[1])] = (fdist[token]/tokCount) * (math.log(500 / (1 + len(doc_dic[token[0]]))))
+        
         
     return tfidf
         
 def filterResults(tfidf):
-    #nonPunct = re.compile('[A-Za-z]')
     for k in tfidf.keys():
-        if k in stopwords.words('english') or not k.isalpha():
+        if not (not k[0] in stopwords.words('english') and k[0].isalpha() and len(k[0]) > 1 and (k[1] == 'NN' or k[1] == 'NNS')):
             del tfidf[k]
-            
+    
     return tfidf
         
 def writeToFile(sorted_output):
     with codecs.open('/home/michi/corpora/tfidf_results.txt', 'w', encoding='utf-8') as outputFile:
         for entry in sorted_output:
-            outputFile.write(entry[0] + ',' + str(entry[1]) + '\n')
-
+            outputFile.write(entry[0][0] + ',' + str(entry[1]) + '\n')
 
 if __name__ == '__main__':
     
@@ -73,9 +78,10 @@ if __name__ == '__main__':
     fdist = calcFreq(data_lemmas)
     doc_dic = calcDF()
     
-    tfidf = calcTFIDF(data_lemmas)
+    tfidf_scores = calcTFIDF(data_lemmas)
     
-    tfidf_filtered = filterResults(tfidf)
+    tfidf_filtered = filterResults(tfidf_scores)
+    print tfidf_filtered.items()[:10]
     sorted_tfidf = sorted(tfidf_filtered.iteritems(), key=operator.itemgetter(1))
     writeToFile(sorted_tfidf)
     
