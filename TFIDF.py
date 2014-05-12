@@ -81,8 +81,7 @@ if __name__ == '__main__':
     tfidf_scores = calcTFIDF(data_lemmas)
     
     tfidf_filtered = filterResults(tfidf_scores)
-    print tfidf_filtered.items()[:10]
-    sorted_tfidf = sorted(tfidf_filtered.iteritems(), key=operator.itemgetter(1))
+    sorted_tfidf = sorted(tfidf_filtered.iteritems(), key=operator.itemgetter(1), reverse=True)
     writeToFile(sorted_tfidf)
     
     print time.time() - t1
