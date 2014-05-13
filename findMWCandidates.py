@@ -14,6 +14,14 @@ def readTaggedData():
             
     return taggedData
 
+def readStopWords():
+    
+    sourceFile = '/home/michi/corpora/stopwords.txt'
+    with codecs.open(sourceFile, 'r', encoding='utf-8') as myFile:
+        stopwords = myFile.read().split()
+        
+    return stopwords
+
 def calc(tagged_data):
     
     term_freq = []
@@ -40,8 +48,9 @@ def calc(tagged_data):
 #             term_freq.append((pos_tagged[i][0], pos_tagged[i+1][0], pos_tagged[i+2][0], pos_tagged[i+3][0]))
 #             rule5 += 1
         
-        if (tagged_data[i][1] == 'NN' or tagged_data[i][1] == 'NNS') and tagged_data[i+1][1] == 'IN' and (tagged_data[i+2][1] == 'NN' or tagged_data[i+2][1] == 'NNS'):
-            term_freq.append((tagged_data[i][0], tagged_data[i+1][0], tagged_data[i+2][0]))
+        if (tagged_data[i][1] == 'NN' or tagged_data[i][1] == 'NNS' or tagged_data[i][1] == 'NNP' or tagged_data[i][1] == 'NNPS') and tagged_data[i+1][1] == 'IN' and (tagged_data[i+2][1] == 'NN' or tagged_data[i+2][1] == 'NNS' or tagged_data[i][1] == 'NNP' or tagged_data[i][1] == 'NNPS'):
+            if (not tagged_data[i][0] in stopwords and not tagged_data[i+1][0] in stopwords and not tagged_data[i+2][0] in stopwords and tagged_data[i][0].isalpha() and tagged_data[i+1][0].isalpha() and tagged_data[i+2][0].isalpha() and (len(tagged_data[i][0]) > 1 and len(tagged_data[i+1][0]) > 1 and len(tagged_data[i+2][0]) > 1)):
+                term_freq.append((tagged_data[i][0].lower(), tagged_data[i+1][0].lower(), tagged_data[i+2][0].lower()))
             #rule6 += 1
             
 #         elif (pos_tagged[i][1] == 'NN' or pos_tagged[i][1] == 'NNS') and (pos_tagged[i+1][1] == 'NN' or pos_tagged[i+1][1] == 'NNS') and (pos_tagged[i+2][1] == 'NN' or pos_tagged[i+2][1] == 'NNS') and (pos_tagged[i+3][1] == 'NN' or pos_tagged[i+3][1] == 'NNS'):
@@ -56,20 +65,24 @@ def calc(tagged_data):
 #             term_freq.append((pos_tagged[i][0], pos_tagged[i+1][0], pos_tagged[i+2][0], pos_tagged[i+3][0]))
 #             rule9 += 1
         
-        elif tagged_data[i][1] == 'JJ' and tagged_data[i+1][1] == 'JJ' and (tagged_data[i+2][1] == 'NN' or tagged_data[i+2][1] == 'NNS'):
-            term_freq.append((tagged_data[i][0], tagged_data[i+1][0], tagged_data[i+2][0]))
+        elif tagged_data[i][1] == 'JJ' and tagged_data[i+1][1] == 'JJ' and (tagged_data[i+2][1] == 'NN' or tagged_data[i+2][1] == 'NNS' or tagged_data[i][1] == 'NNP' or tagged_data[i][1] == 'NNPS'):
+            if (not tagged_data[i][0] in stopwords and not tagged_data[i+1][0] in stopwords and not tagged_data[i+2][0] in stopwords and tagged_data[i][0].isalpha() and tagged_data[i+1][0].isalpha() and tagged_data[i+2][0].isalpha() and (len(tagged_data[i][0]) > 1 and len(tagged_data[i+1][0]) > 1 and len(tagged_data[i+2][0]) > 1)):                
+                term_freq.append((tagged_data[i][0].lower(), tagged_data[i+1][0].lower(), tagged_data[i+2][0].lower()))
             #rule10 += 1
     
-        elif tagged_data[i][1] == 'JJ' and (tagged_data[i+1][1] == 'NN' or tagged_data[i+1][1] == 'NNS') and (tagged_data[i+2][1] == 'NN' or tagged_data[i+2][1] == 'NNS'):
-            term_freq.append((tagged_data[i][0], tagged_data[i+1][0], tagged_data[i+2][0]))
+        elif tagged_data[i][1] == 'JJ' and (tagged_data[i+1][1] == 'NN' or tagged_data[i+1][1] == 'NNS' or tagged_data[i][1] == 'NNP' or tagged_data[i][1] == 'NNPS') and (tagged_data[i+2][1] == 'NN' or tagged_data[i+2][1] == 'NNS' or tagged_data[i][1] == 'NNP' or tagged_data[i][1] == 'NNPS'):
+            if (not tagged_data[i][0] in stopwords and not tagged_data[i+1][0] in stopwords and not tagged_data[i+2][0] in stopwords and tagged_data[i][0].isalpha() and tagged_data[i+1][0].isalpha() and tagged_data[i+2][0].isalpha() and (len(tagged_data[i][0]) > 1 and len(tagged_data[i+1][0]) > 1 and len(tagged_data[i+2][0]) > 1)):                
+                term_freq.append((tagged_data[i][0].lower(), tagged_data[i+1][0].lower(), tagged_data[i+2][0].lower()))
             #rule11 += 1
             
-        elif (tagged_data[i][1] == 'NN' or tagged_data[i][1] == 'NNS') and (tagged_data[i+1][1] == 'NN' or tagged_data[i+1][1] == 'NNS') and (tagged_data[i+2][1] == 'NN' or tagged_data[i+2][1] == 'NNS'):
-            term_freq.append((tagged_data[i][0], tagged_data[i+1][0], tagged_data[i+2][0]))
+        elif (tagged_data[i][1] == 'NN' or tagged_data[i][1] == 'NNS' or tagged_data[i][1] == 'NNP' or tagged_data[i][1] == 'NNPS') and (tagged_data[i+1][1] == 'NN' or tagged_data[i+1][1] == 'NNS' or tagged_data[i][1] == 'NNP' or tagged_data[i][1] == 'NNPS') and (tagged_data[i+2][1] == 'NN' or tagged_data[i+2][1] == 'NNS' or tagged_data[i][1] == 'NNP' or tagged_data[i][1] == 'NNPS'):
+            if (not tagged_data[i][0] in stopwords and not tagged_data[i+1][0] in stopwords and not tagged_data[i+2][0] in stopwords and tagged_data[i][0].isalpha() and tagged_data[i+1][0].isalpha() and tagged_data[i+2][0].isalpha() and (len(tagged_data[i][0]) > 1 and len(tagged_data[i+1][0]) > 1 and len(tagged_data[i+2][0]) > 1)):
+                term_freq.append((tagged_data[i][0].lower(), tagged_data[i+1][0].lower(), tagged_data[i+2][0].lower()))
             #rule13 += 1
             
-        elif (tagged_data[i][1] == 'NN' or tagged_data[i][1] == 'NNS') and ( tagged_data[i+1][1] == 'NN' or tagged_data[i+1][1] == 'NNS'):
-            term_freq.append((tagged_data[i][0], tagged_data[i+1][0]))
+        elif (tagged_data[i][1] == 'NN' or tagged_data[i][1] == 'NNS' or tagged_data[i][1] == 'NNP' or tagged_data[i][1] == 'NNPS') and ( tagged_data[i+1][1] == 'NN' or tagged_data[i+1][1] == 'NNS' or tagged_data[i][1] == 'NNP' or tagged_data[i][1] == 'NNPS'):
+            if (not tagged_data[i][0] in stopwords and not tagged_data[i+1][0] in stopwords and tagged_data[i][0].isalpha() and tagged_data[i+1][0].isalpha() and (len(tagged_data[i][0]) > 1 and len(tagged_data[i+1][0]) > 1)):
+                term_freq.append((tagged_data[i][0].lower(), tagged_data[i+1][0].lower()))
             #rule12 += 1
 
     return term_freq
@@ -90,6 +103,7 @@ if __name__ == '__main__':
     
     t1 = time.time()
     
+    stopwords = readStopWords()
     tagged = readTaggedData()
     scores = calc(tagged)
     fdist = calcFdist(scores)
