@@ -6,6 +6,7 @@ from nltk import FreqDist
 import time, math, codecs, operator
 from collections import defaultdict
 from nltk.stem.wordnet import WordNetLemmatizer
+from nltk.corpus import stopwords
 
 lmtzr = WordNetLemmatizer()
 
@@ -16,7 +17,6 @@ def readStopWords():
         stopwords = myFile.read().split()
         
     return stopwords
-
 
 def readTaggedData():
     
@@ -53,22 +53,31 @@ def calcDF():
             
     return doc_dic
 
-
 def calcTFIDF(data_lemmas):
     tfidf = {}
     tokCount = len(fdist)
-    for token in set(data_lemmas):
-        if lmtzr.lemmatize(token[0]) in tfidf:
-            tfidf[(lmtzr.lemmatize(token[0]), token[1])] += (fdist[token]/tokCount) * (math.log(500 / (1 + len(doc_dic[token[0]]))))
-        else:
-            tfidf[(lmtzr.lemmatize(token[0]), token[1])] = (fdist[token]/tokCount) * (math.log(500 / (1 + len(doc_dic[token[0]]))))
-        
+    for entry in data_lemmas:
+        try:
+            if not entry[0] in tfidf:
+                tfidf[lmtzr.lemmatize(entry[0])] = [(fdist[entry]/tokCount) * (math.log(500 / (1 + len(doc_dic[entry[0]])))), entry[1]]
+            else:
+                tfidf[lmtzr.lemmatize(entry[0])].extend([(fdist[entry]/tokCount) * (math.log(500 / (1 + len(doc_dic[entry[0]])))), entry[1]])
+        except:
+            continue
+            
+    for k,v in tfidf.items():
+        if len(v) > 2:
+            temp = 0
+            for b in v:
+                if type(b) == float:
+                    temp += b
+            tfidf[k] = [temp, v[1]]     
         
     return tfidf
         
 def filterResults(tfidf):
-    for k in tfidf.keys():
-        if not (not k[0] in stopwords and k[0].isalpha() and len(k[0]) > 1 and (k[1] == 'NN' or k[1] == 'NNS')):
+    for k,v in tfidf.items():
+        if not (not k in stopwords and k.isalpha() and len(k) > 1 and (v[1] == 'NN' or v[1] == 'NNS')):
             del tfidf[k]
     
     return tfidf
@@ -76,7 +85,7 @@ def filterResults(tfidf):
 def writeToFile(sorted_output):
     with codecs.open('/home/michi/corpora/tfidf_results.txt', 'w', encoding='utf-8') as outputFile:
         for entry in sorted_output:
-            outputFile.write(entry[0][0] + ',' + str(entry[1]) + '\n')
+            outputFile.write(entry[0] + ',' + str(entry[1][0]) + '\n')
 
 if __name__ == '__main__':
     
@@ -90,7 +99,7 @@ if __name__ == '__main__':
     tfidf_scores = calcTFIDF(data_lemmas)
     
     tfidf_filtered = filterResults(tfidf_scores)
-    sorted_tfidf = sorted(tfidf_filtered.iteritems(), key=operator.itemgetter(1), reverse=True)
+    sorted_tfidf = sorted(tfidf_scores.iteritems(), key=operator.itemgetter(1), reverse=True)
     writeToFile(sorted_tfidf)
     
     print time.time() - t1
