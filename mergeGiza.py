@@ -12,7 +12,7 @@ def readFile(inputFile):
     data = {}
         
     for line in handle.readlines():
-        data[int(line.split(' ')[0])] = line.split(' ')[1]
+        data[int(line.split(' ')[0])] = line.split(' ')[1].lower()
         
     handle.close()
     
@@ -41,8 +41,8 @@ def alignTokens(src, trg, alignedIDs):
 
     for entry in alignedIDs.items():
         if entry[0] in src and entry[1] in trg:
-            alignedToks.append((src[entry[0]], trg[entry[1]]))
-
+            alignedToks.append([src[entry[0]], trg[entry[1]]])
+        
     return alignedToks
 
 def writeToFile(finalMerge):
@@ -51,7 +51,7 @@ def writeToFile(finalMerge):
     with codecs.open(outFile, 'w', encoding='utf-8') as myFile:
         for entry in finalMerge:
             if entry[0].isalpha():
-                myFile.write(entry[0].lower() + ',' + entry[1] + '\n')
+                myFile.write(entry[0] + ',' + entry[1] + '\n')
 
 if __name__ == '__main__':
     
@@ -63,6 +63,6 @@ if __name__ == '__main__':
     targetLang = readFile(targetFile)
     aligned = readAlignment(alignmentFile)
        
-    finalMerge = alignTokens(sourceLang, targetLang, aligned)   
+    finalMerge = alignTokens(sourceLang, targetLang, aligned)
     writeToFile(finalMerge)
      
