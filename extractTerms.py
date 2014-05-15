@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*- 
 from __future__ import division
 import codecs, ast
+from collections import defaultdict
 
 def readSingleWords():
     
@@ -35,17 +36,17 @@ def readTokenAlignment():
     return alignedTokens
 
 def filterSingleTerms(singleWordTerms):
-    # use only terms whose score is higher than 1/10 of max score
+    # use only terms whose score is higher than 10
     
-    return [word for word in singleWordTerms if ast.literal_eval(word[1]) >= ast.literal_eval(singleWordTerms[0][1]) / 10]
+    return [word for word in singleWordTerms if ast.literal_eval(word[1]) >= 10]
     
 def filterMultiTerms(multiWordTerms):
-    # use only terms with occurrence higher than 5 and return term without occurrence
+    # use only terms with occurrence higher than 500 and return term without occurrence
     
     temp = []
     for entry in multiWordTerms:
         try:
-            if int(entry[1]) >= 250:
+            if int(entry[1]) >= 500:
                 temp.append(entry[0])
         except Exception:
             pass
@@ -59,8 +60,9 @@ def alignSingleTerms(singleWordTerms, alignedData):
         for entry in alignedData:
             if term[0] == entry[0]:
                 alignedSingleTerms.append(entry)
-                
+            
     return alignedSingleTerms
+
 
 def alignMultiTerms(multiWordTerms, alignedData):
     
@@ -107,7 +109,7 @@ if __name__ == '__main__':
     alignedMultiTerms = alignMultiTerms(filteredMultiTerms, alignedData)
 
     print alignedSingleTerms[:10], len(alignedSingleTerms)
-    print alignedMultiTerms[:10], len(alignedMultiTerms)
+    #print alignedMultiTerms[:10], len(alignedMultiTerms)
      
     writeToFile(alignedSingleTerms, alignedMultiTerms)
     
