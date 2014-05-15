@@ -55,23 +55,21 @@ def calcDF():
 
 
 def calcTFIDF(data_lemmas):
-    tfidf = {}
+    tfidf = defaultdict(float)
     tokCount = len(fdist)
     for token in set(data_lemmas):
-        if lmtzr.lemmatize(token[0]) in tfidf:
-            tfidf[(lmtzr.lemmatize(token[0]), token[1])] += (fdist[token]/tokCount) * (math.log(500 / (1 + len(doc_dic[token[0]]))))
-        else:
-            tfidf[(lmtzr.lemmatize(token[0]), token[1])] = (fdist[token]/tokCount) * (math.log(500 / (1 + len(doc_dic[token[0]]))))
-        
+        #if token[1] == 'NN' or token[1] == 'NNS':
+        tfidf[lmtzr.lemmatize(token[0])] += [tfidf.get(token[0], 0) + (fdist[token]/tokCount) * (math.log(500 / (1 + len(doc_dic[token[0]])))), token[1]]      
         
     return tfidf
         
-def filterResults(tfidf):
-    for k in tfidf.keys():
-        if not (not k[0] in stopwords and k[0].isalpha() and len(k[0]) > 1 and (k[1] == 'NN' or k[1] == 'NNS')):
-            del tfidf[k]
+def filterResults(unfiltered):
+    for k in unfiltered.items():
+        filtered = {}
+        if (not k[0] in stopwords and k[0].isalpha() and len(k[0]) > 1):# and (k[1] == 'NN' or k[1] == 'NNS')):
+            filtered[k[0]] = k[1]
     
-    return tfidf
+    return filtered
         
 def writeToFile(sorted_output):
     with codecs.open('/home/michi/corpora/tfidf_results.txt', 'w', encoding='utf-8') as outputFile:
@@ -89,7 +87,9 @@ if __name__ == '__main__':
     
     tfidf_scores = calcTFIDF(data_lemmas)
     
+    print tfidf_scores.items()[:30]
     tfidf_filtered = filterResults(tfidf_scores)
+    print tfidf_filtered.items()[:30]
     sorted_tfidf = sorted(tfidf_filtered.iteritems(), key=operator.itemgetter(1), reverse=True)
     writeToFile(sorted_tfidf)
     
