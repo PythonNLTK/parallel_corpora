@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*- 
 from __future__ import division
 import codecs, ast
-from collections import defaultdict
 
 def readSingleWords():
     
