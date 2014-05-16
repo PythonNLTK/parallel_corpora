@@ -59,8 +59,12 @@ def alignSingleTerms(singleWordTerms, alignedData):
         for entry in alignedData:
             if term[0] == entry[0]:
                 alignedSingleTerms.append(entry)
-            
-    return alignedSingleTerms
+                
+    uniqueTerms = {}
+    for entry in alignedSingleTerms:
+        uniqueTerms[entry[0]] = entry[1]
+                    
+    return uniqueTerms
 
 
 def alignMultiTerms(multiWordTerms, alignedData):
@@ -88,13 +92,11 @@ def writeToFile(alignedSingle, alignedMulti):
     outFile = '/home/michi/corpora/final_results.txt'
     
     with codecs.open(outFile, 'w', encoding='utf-8') as myFile:
-        for single in alignedSingle:
-            myFile.write(' '.join(single))
-            myFile.write('\n')
+        for single in alignedSingle.items():
+            myFile.write(' '.join(single) + '\n')
             
         for multi in alignedMulti:
-            myFile.write(' '.join(multi))
-            myFile.write('\n')
+            myFile.write(' '.join(multi) + '\n')
 
 if __name__ == '__main__':
        
@@ -105,11 +107,10 @@ if __name__ == '__main__':
     
     alignedData = readTokenAlignment()
     alignedSingleTerms = alignSingleTerms(filteredSingleTerms, alignedData)
-    alignedMultiTerms = alignMultiTerms(filteredMultiTerms, alignedData)
+    alignedMultiTerms = alignMultiTerms(filteredMultiTerms, alignedData)    
 
-    print alignedSingleTerms[:10], len(alignedSingleTerms)
+    #print alignedSingleTerms[:10], len(alignedSingleTerms)
     #print alignedMultiTerms[:10], len(alignedMultiTerms)
      
     writeToFile(alignedSingleTerms, alignedMultiTerms)
-    
     
