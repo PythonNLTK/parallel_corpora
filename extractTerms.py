@@ -59,7 +59,8 @@ def alignSingleTerms(singleWordTerms, alignedData):
     for term in singleWordTerms:
         for entry in alignedData:
             if term[0] == entry[0]:
-                alignedSingleTerms[entry[0]] = entry[1]
+                if not entry[0] in alignedSingleTerms:
+                    alignedSingleTerms[entry[0]] = entry[1]
                     
     return alignedSingleTerms
 
