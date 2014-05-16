@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*- 
 from __future__ import division
 import codecs, ast
+from collections import OrderedDict
 
 def readSingleWords():
     
@@ -54,17 +55,13 @@ def filterMultiTerms(multiWordTerms):
 
 def alignSingleTerms(singleWordTerms, alignedData):
     
-    alignedSingleTerms = []
+    alignedSingleTerms = OrderedDict()
     for term in singleWordTerms:
         for entry in alignedData:
             if term[0] == entry[0]:
-                alignedSingleTerms.append(entry)
-                
-    uniqueTerms = {}
-    for entry in alignedSingleTerms:
-        uniqueTerms[entry[0]] = entry[1]
+                alignedSingleTerms[entry[0]] = entry[1]
                     
-    return uniqueTerms
+    return alignedSingleTerms
 
 
 def alignMultiTerms(multiWordTerms, alignedData):
@@ -93,10 +90,10 @@ def writeToFile(alignedSingle, alignedMulti):
     
     with codecs.open(outFile, 'w', encoding='utf-8') as myFile:
         for single in alignedSingle.items():
-            myFile.write(' '.join(single) + '\n')
+            myFile.write(' '.join(single))
             
         for multi in alignedMulti:
-            myFile.write(' '.join(multi) + '\n')
+            myFile.write(' '.join(multi))
 
 if __name__ == '__main__':
        
