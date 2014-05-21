@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*- 
 from __future__ import division
 import codecs, ast
+from collections import OrderedDict
 
 def readSingleWords():
     
@@ -40,12 +41,12 @@ def filterSingleTerms(singleWordTerms):
     return [word for word in singleWordTerms if ast.literal_eval(word[1]) >= 10]
     
 def filterMultiTerms(multiWordTerms):
-    # use only terms with occurrence higher than 500 and return term without occurrence
+    # use only terms with occurrence higher than 300 and return term without occurrence
     
     temp = []
     for entry in multiWordTerms:
         try:
-            if int(entry[1]) >= 500:
+            if int(entry[1]) >= 300:
                 temp.append(entry[0])
         except Exception:
             pass
@@ -54,12 +55,13 @@ def filterMultiTerms(multiWordTerms):
 
 def alignSingleTerms(singleWordTerms, alignedData):
     
-    alignedSingleTerms = []
+    alignedSingleTerms = OrderedDict()
     for term in singleWordTerms:
         for entry in alignedData:
             if term[0] == entry[0]:
-                alignedSingleTerms.append(entry)
-            
+                if not entry[0] in alignedSingleTerms:
+                    alignedSingleTerms[entry[0]] = entry[1]
+                    
     return alignedSingleTerms
 
 
@@ -88,13 +90,11 @@ def writeToFile(alignedSingle, alignedMulti):
     outFile = '/home/michi/corpora/final_results.txt'
     
     with codecs.open(outFile, 'w', encoding='utf-8') as myFile:
-        for single in alignedSingle:
+        for single in alignedSingle.items():
             myFile.write(' '.join(single))
-            myFile.write('\n')
             
         for multi in alignedMulti:
             myFile.write(' '.join(multi))
-            myFile.write('\n')
 
 if __name__ == '__main__':
        
@@ -105,11 +105,10 @@ if __name__ == '__main__':
     
     alignedData = readTokenAlignment()
     alignedSingleTerms = alignSingleTerms(filteredSingleTerms, alignedData)
-    alignedMultiTerms = alignMultiTerms(filteredMultiTerms, alignedData)
+    alignedMultiTerms = alignMultiTerms(filteredMultiTerms, alignedData)    
 
-    print alignedSingleTerms[:10], len(alignedSingleTerms)
+    #print alignedSingleTerms[:10], len(alignedSingleTerms)
     #print alignedMultiTerms[:10], len(alignedMultiTerms)
      
     writeToFile(alignedSingleTerms, alignedMultiTerms)
-    
     
