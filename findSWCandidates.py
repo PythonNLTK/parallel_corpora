@@ -55,7 +55,7 @@ def calcDF():
 
 def calcTFIDF(data_lemmas):
     tfidf = {}
-    tokCount = len(fdist)
+    tokCount = fdist.items()[0][1]
     for entry in data_lemmas:
         try:
             if not entry[0] in tfidf:
